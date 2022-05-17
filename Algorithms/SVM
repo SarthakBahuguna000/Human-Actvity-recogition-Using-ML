@@ -1,0 +1,100 @@
+
+
+POSES = {
+        "Tree_Pose_or_Vrksasana_": 0,
+        "Extended_Revolved_Triangle_Pose_or_Utthita_Trikonasana_": 1,
+        "Warrior_I_Pose_or_Virabhadrasana_I_": 2,
+        "Warrior_II_Pose_or_Virabhadrasana_II_": 3,
+        "Warrior_III_Pose_or_Virabhadrasana_III_": 4
+        }
+
+KEY_POINTS = [
+        'Neck', 'Right Shoulder', 'Right Elbow', 'Right Wrist',
+        'Left Shoulder', 'Left Elbow', 'Left Wrist', 'Right Hip', 'Right Knee',
+        'Right Ankle', 'Left Hip', 'Left Knee', 'Left Ankle']
+
+import pandas as pd
+import os
+
+data = {}
+
+for pose, class_id in POSES.items():
+    data[class_id] = pd.read_csv(os.path.join('in', '{}.csv'.format(pose)), index_col=0)
+ print(data[0][['Neck y', 'Right Wrist y', 'Left Wrist y']].head())
+
+print(data[1][['Neck y', 'Right Wrist y', 'Left Wrist y']].head())
+
+normalized_data = {}
+
+for pose, class_id in POSES.items():
+    df = data[class_id].copy()
+
+    
+    df = df[(df.T != -1).any()]
+
+    # Center all points around neck
+    for kp in KEY_POINTS[1:]:
+        df['{} x'.format(kp)] = df['{} x'.format(kp)] - df['Neck x']
+        df['{} y'.format(kp)] = df['{} y'.format(kp)] - df['Neck y']
+
+   
+    df = df.drop(columns=['Neck x', 'Neck y'])
+
+    # Normalize to the range [0, 1]
+    pose_mean = df.stack().mean()
+    pose_std = df.stack().std()
+    df = (df - pose_mean) / pose_std
+
+    normalized_data[class_id] = df
+    df.to_csv(os.path.join('normalized', '{}.csv'.format(pose)), index=False)
+print(normalized_data[0][['Right Wrist y', 'Left Wrist y']].head())
+
+print(normalized_data[1][['Right Wrist y', 'Left Wrist y']].head())
+
+import numpy as np
+from sklearn.svm import LinearSVC
+
+NUM_TEST = 10
+
+X_train = None
+y_train = None
+X_test = None
+y_test = None
+
+for pose, class_id in POSES.items():
+    df = normalized_data[class_id]
+
+    X_pose = df.to_numpy()
+    y_pose = [class_id] * df.shape[0]
+
+    print('X shape for {}:'.format(pose), X_pose.shape)
+    print('y length:', len(y_pose))
+
+    X_pose_train = X_pose[:-NUM_TEST][:]
+    y_pose_train = y_pose[:-NUM_TEST]
+
+    X_pose_test = X_pose[-NUM_TEST:][:]
+    y_pose_test = y_pose[-NUM_TEST:]
+
+    if X_train is None:
+        X_train = X_pose_train
+    else:
+        X_train = np.concatenate((X_train, X_pose_train), axis=0)
+
+    if y_train is None:
+        y_train = y_pose_train
+    else:
+        y_train = np.concatenate((y_train, y_pose_train))
+
+    if X_test is None:
+        X_test = X_pose_test
+    else:
+        X_test = np.concatenate((X_test, X_pose_test), axis=0)
+
+    if y_test is None:
+        y_test = y_pose_test
+    else:
+        y_test = np.concatenate((y_test, y_pose_test))
+    
+clf = LinearSVC(C=1.0)
+clf.fit(X_train, y_train)
