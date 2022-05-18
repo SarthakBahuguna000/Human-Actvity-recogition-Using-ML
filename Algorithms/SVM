@@ -1,11 +1,11 @@
 
 
 POSES = {
-        "Tree_Pose_or_Vrksasana_": 0,
-        "Extended_Revolved_Triangle_Pose_or_Utthita_Trikonasana_": 1,
-        "Warrior_I_Pose_or_Virabhadrasana_I_": 2,
-        "Warrior_II_Pose_or_Virabhadrasana_II_": 3,
-        "Warrior_III_Pose_or_Virabhadrasana_III_": 4
+        "standing": 0,
+        "sitting": 1,
+        "Running": 2,
+        "Dancing": 3,
+        
         }
 
 KEY_POINTS = [
@@ -32,7 +32,7 @@ for pose, class_id in POSES.items():
     
     df = df[(df.T != -1).any()]
 
-    # Center all points around neck
+   
     for kp in KEY_POINTS[1:]:
         df['{} x'.format(kp)] = df['{} x'.format(kp)] - df['Neck x']
         df['{} y'.format(kp)] = df['{} y'.format(kp)] - df['Neck y']
@@ -40,7 +40,7 @@ for pose, class_id in POSES.items():
    
     df = df.drop(columns=['Neck x', 'Neck y'])
 
-    # Normalize to the range [0, 1]
+    
     pose_mean = df.stack().mean()
     pose_std = df.stack().std()
     df = (df - pose_mean) / pose_std
