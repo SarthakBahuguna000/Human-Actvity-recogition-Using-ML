@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 keypointsMapping =  [
         'Right ear','Neck', 'Right Shoulder', 'Right Elbow', 'Right Wrist',
         'Left Shoulder', 'Left Elbow', 'Left Wrist', 'left eye','Right Hip', 'Right Knee',
-        'Right Ankle','right eye', 'Left Hip', 'Left Knee', 'Left Ankle','left ear','chest]
+        'Right Ankle','right eye', 'Left Hip', 'Left Knee', 'Left Ankle','left ear','chest']
 
 pipelines = {
     'lr':make_pipeline(StandardScaler(), LogisticRegression()),
