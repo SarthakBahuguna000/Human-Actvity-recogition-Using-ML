@@ -31,29 +31,27 @@ print("Comparison of all algorithms on Accuracy")
 x.field_names = ["Model", "Accuracy"]
 
 x.add_row(["Logistic Regression Algorithm", 1.0])
-x.add_row(["Ridge Classifier Algorithm",  1.0])
 x.add_row(["Random Forest Algorithm", 1.0])
-x.add_row(["Gradient Boosting Classifier", 0.998])
 
 with open('body_language.pkl', 'wb') as f:
     pickle.dump(fit_models['rf'], f)cap = cv2.VideoCapture(0)
-# Initiate holistic model
+
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     
     while cap.isOpened():
         ret, frame = cap.read()
         
-        # Recolor Feed
+        
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False        
         
-        # Make Detections
+   
         results = holistic.process(image)
         # print(results.face_landmarks)
         
-        # face_landmarks, pose_landmarks, left_hand_landmarks, right_hand_landmarks
         
-        # Recolor image back to BGR for rendering
+        
+        
         image.flags.writeable = True   
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
