@@ -10,7 +10,7 @@ import argparse
 keypointsMapping = [
         'Right ear','Neck', 'Right Shoulder', 'Right Elbow', 'Right Wrist',
         'Left Shoulder', 'Left Elbow', 'Left Wrist', 'left eye','Right Hip', 'Right Knee',
-        'Right Ankle','right eye', 'Left Hip', 'Left Knee', 'Left Ankle','left ear','chest]
+        'Right Ankle','right eye', 'Left Hip', 'Left Knee', 'Left Ankle','left ear','chest']
 # point >=14 are of no use
 POSE_PAIRS = [[1,2], [1,5], [2,3], [3,4], [5,6], [6,7],
               [1,8], [8,9], [9,10], [1,11], [11,12], [12,13],
