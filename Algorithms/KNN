@@ -7,8 +7,10 @@ from random import randint
 #from sklearn import tree
 from sklearn.neighbors import KNeighborsClassifier
 import argparse
-keypointsMapping = ['Nose', 'Neck', 'R-Sho', 'R-Elb', 'R-Wr', 'L-Sho', 'L-Elb', 'L-Wr', 'R-Hip', 'R-Knee', 'R-Ank', 'L-Hip', 'L-Knee', 'L-Ank', 'R-Eye', 'L-Eye', 'R-Ear', 'L-Ear']
-
+keypointsMapping = [
+        'Neck', 'Right Shoulder', 'Right Elbow', 'Right Wrist',
+        'Left Shoulder', 'Left Elbow', 'Left Wrist', 'Right Hip', 'Right Knee',
+        'Right Ankle', 'Left Hip', 'Left Knee', 'Left Ankle']
 # point >=14 are of no use
 POSE_PAIRS = [[1,2], [1,5], [2,3], [3,4], [5,6], [6,7],
               [1,8], [8,9], [9,10], [1,11], [11,12], [12,13],
@@ -193,11 +195,11 @@ def classify(orient, pose):
 
 if __name__ == '__main__':
 
-    action = ['kick','shoot','normal','slap']
+    action = ['standing','sitting','running','dancing']
 
     #act = ['normal']
     
-    for pose in action:#change to 'action' when reading whole data at once
+    for pose in action:
     
         for filename in glob.glob('test_cases/'+pose+'/*'):
       
@@ -250,7 +252,7 @@ if __name__ == '__main__':
             personwiseKeypoints = getPersonwiseKeypoints(valid_pairs, invalid_pairs)
             
             
-            #Opening file to write orientation data
+        
             file = open('orient_test_result.csv', 'a+')
             
             for n in range(len(personwiseKeypoints)):
